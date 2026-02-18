@@ -447,37 +447,12 @@ function displayResults(predictions, homeCountry, violationType, baselineNegativ
     // Update summary statistics
     const avgImpact = predictions.reduce((sum, p) => sum + parseFloat(p.impactPP), 0) / predictions.length;
     const positiveCount = predictions.filter(p => parseFloat(p.impactPP) > 0).length;
-    const negativeCount = predictions.filter(p => parseFloat(p.impactPP) < 0).length;
     const maxImpact = Math.max(...predictions.map(p => Math.abs(parseFloat(p.impactPP))));
 
     document.getElementById('statMarkets').textContent = predictions.length;
     document.getElementById('statAvgImpact').textContent = avgImpact > 0 ? `+${avgImpact.toFixed(2)}pp` : `${avgImpact.toFixed(2)}pp`;
     document.getElementById('statPositiveMarkets').textContent = `${positiveCount} / ${predictions.length}`;
     document.getElementById('statMaxImpact').textContent = `${maxImpact.toFixed(2)}pp`;
-
-    // Show interpretation alert
-    const interpretationAlert = document.getElementById('interpretationAlert');
-    const interpretationText = document.getElementById('interpretationText');
-
-    if (negativeCount > 0) {
-        interpretationAlert.style.display = 'block';
-
-        if (violationType === 'governance') {
-            interpretationText.innerHTML = `
-                <strong>${negativeCount} markets show negative impact</strong> (negative sentiment decreases).
-                This is expected for governance violations in psychically distant markets with high unemployment,
-                where the violation doesn't resonate or generate consumer backlash.
-            `;
-        } else {
-            interpretationText.innerHTML = `
-                <strong>${negativeCount} markets show negative impact</strong> (negative sentiment decreases).
-                This indicates the violation doesn't generate backlash in these markets,
-                possibly due to high psychic distance or other contextual factors.
-            `;
-        }
-    } else {
-        interpretationAlert.style.display = 'none';
-    }
 
     // Generate visualizations
     generateWorldMap(predictions, homeCountry);
